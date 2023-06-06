@@ -28,8 +28,15 @@
 (defn usuario
   [request]
   ;(let [id (-> request :path-params :id)])
-  (ring-resp/response {:status "Ok" :usuario (first (jdbc/query db-spec ["SELECT * FROM usuarios WHERE id = ?" (-> request :path-params :id)]))})
+  (ring-resp/response {:status "Ok" :usuario (jdbc/query db-spec ["SELECT * FROM usuarios WHERE id = ?" (-> request :path-params :id)] {:result-set-fn first})})
  )
+
+(defn atualizar-usuario
+  [request]
+  ;(let [id (-> request :path-params :id)])
+  (jdbc/update! db-spec "usuarios" {:nome (-> request :json-params :nome)} ["id = ?" (-> request :json-params :id)])
+  (ring-resp/response {:status "Ok" :usuario_id (-> request :json-params :id)})
+)
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -40,7 +47,8 @@
 (def routes #{["/" :get (conj common-interceptors `home-page)]
               ["/usuarios" :get (conj common-interceptors `usuarios)]
               ["/criar-usuario" :post (conj common-interceptors `criar-usuario)]
-              ["/usuarios/:id" :get (conj common-interceptors `usuario)]})
+              ["/usuarios/:id" :get (conj common-interceptors `usuario)]
+              ["/atualizar-usuario" :post (conj common-interceptors `atualizar-usuario)]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
