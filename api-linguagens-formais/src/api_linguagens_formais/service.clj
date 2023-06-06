@@ -17,13 +17,18 @@
 
 (defn usuarios
   [request]
-  (ring-resp/response {:usuarios (jdbc/query db-spec ["SELECT * FROM usuarios"])}))
+  (ring-resp/response {:status "Ok" :usuarios (jdbc/query db-spec ["SELECT * FROM usuarios"])}))
 
+(defn criar-usuario
+  [request]
+  (jdbc/insert! db-spec "usuarios" {:nome (-> request :json-params :nome)})
+  (ring-resp/response {:status "Ok" :usuario_id (first (jdbc/query db-spec ["SELECT max(id) as id FROM usuarios"] {:row-fn :id}))})
+ )
 
 (defn usuario
   [request]
   ;(let [id (-> request :path-params :id)])
-  (ring-resp/response {:usuario (first (jdbc/query db-spec ["SELECT * FROM usuarios WHERE id = ?" (-> request :path-params :id)]))})
+  (ring-resp/response {:status "Ok" :usuario (first (jdbc/query db-spec ["SELECT * FROM usuarios WHERE id = ?" (-> request :path-params :id)]))})
  )
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
@@ -34,6 +39,7 @@
 ;; Tabular routes
 (def routes #{["/" :get (conj common-interceptors `home-page)]
               ["/usuarios" :get (conj common-interceptors `usuarios)]
+              ["/criar-usuario" :post (conj common-interceptors `criar-usuario)]
               ["/usuarios/:id" :get (conj common-interceptors `usuario)]})
 
 ;; Map-based routes
