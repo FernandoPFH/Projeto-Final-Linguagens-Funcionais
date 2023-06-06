@@ -34,8 +34,15 @@
 (defn atualizar-usuario
   [request]
   ;(let [id (-> request :path-params :id)])
-  (jdbc/update! db-spec "usuarios" {:nome (-> request :json-params :nome)} ["id = ?" (-> request :json-params :id)])
+  (jdbc/update! db-spec "usuarios" {:nome (-> request :json-params :nome)} ["id = ?" (-> request :path-params :id)])
   (ring-resp/response {:status "Ok" :usuario_id (-> request :json-params :id)})
+)
+
+(defn deletar-usuario
+  [request]
+  ;(let [id (-> request :path-params :id)])
+  (jdbc/delete! db-spec "usuarios" ["id = ?" (-> request :path-params :id)])
+  (ring-resp/response {:status "Ok" :usuario_id (-> request :path-params :id)})
 )
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
@@ -48,7 +55,8 @@
               ["/usuarios" :get (conj common-interceptors `usuarios)]
               ["/criar-usuario" :post (conj common-interceptors `criar-usuario)]
               ["/usuarios/:id" :get (conj common-interceptors `usuario)]
-              ["/atualizar-usuario" :put (conj common-interceptors `atualizar-usuario)]})
+              ["/atualizar-usuario/:id" :put (conj common-interceptors `atualizar-usuario)]
+              ["/deletar-usuario/:id" :delete (conj common-interceptors `deletar-usuario)]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
