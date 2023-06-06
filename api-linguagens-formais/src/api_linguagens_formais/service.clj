@@ -20,6 +20,12 @@
   (ring-resp/response {:usuarios (jdbc/query db-spec ["SELECT * FROM usuarios"])}))
 
 
+(defn usuario
+  [request]
+  ;(let [id (-> request :path-params :id)])
+  (ring-resp/response {:usuario (first (jdbc/query db-spec ["SELECT * FROM usuarios WHERE id = ?" (-> request :path-params :id)]))})
+ )
+
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
 ;; apply to / and its children (/about).
@@ -27,7 +33,8 @@
 
 ;; Tabular routes
 (def routes #{["/" :get (conj common-interceptors `home-page)]
-              ["/usuarios" :get (conj common-interceptors `usuarios)]})
+              ["/usuarios" :get (conj common-interceptors `usuarios)]
+              ["/usuarios/:id" :get (conj common-interceptors `usuario)]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
