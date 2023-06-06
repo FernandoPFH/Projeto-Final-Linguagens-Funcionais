@@ -48,7 +48,7 @@
               ["/usuarios" :get (conj common-interceptors `usuarios)]
               ["/criar-usuario" :post (conj common-interceptors `criar-usuario)]
               ["/usuarios/:id" :get (conj common-interceptors `usuario)]
-              ["/atualizar-usuario" :post (conj common-interceptors `atualizar-usuario)]})
+              ["/atualizar-usuario" :put (conj common-interceptors `atualizar-usuario)]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
