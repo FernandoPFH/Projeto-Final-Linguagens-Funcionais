@@ -4,7 +4,7 @@ version: '3.1'
 services:
 
   db:
-    image: mysql:8.0.33
+    build: banco_de_dados/.
     # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
     # (this is just an example, not intended to be a production configuration)
     command: --default-authentication-plugin=mysql_native_password
@@ -19,3 +19,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  api:
+    build: api-linguagens-formais/.
+    ports:
+      - 8000:8000

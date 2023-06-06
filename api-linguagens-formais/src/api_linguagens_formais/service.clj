@@ -6,10 +6,19 @@
             [ring.util.response :as ring-resp]))
 
 (def db-spec {:subprotocol "mysql"
-              :subname "//localhost:3306/linguagens_funcionais"
+              :subname "//db:3306/linguagens_funcionais"
               :user "root"
               :password "example"})
 
+
+(def usuarios-create-table
+  (jdbc/create-table-ddl :usuarios
+                         [[:id "int NOT NULL AUTO_INCREMENT key"]
+                          [:nome "text"]]
+                         ))
+
+(jdbc/db-do-commands db-spec
+                     [usuarios-create-table])
 
 (defn home-page
   [request]
@@ -35,7 +44,7 @@
   [request]
   ;(let [id (-> request :path-params :id)])
   (jdbc/update! db-spec "usuarios" {:nome (-> request :json-params :nome)} ["id = ?" (-> request :path-params :id)])
-  (ring-resp/response {:status "Ok" :usuario_id (-> request :json-params :id)})
+  (ring-resp/response {:status "Ok" :usuario_id (-> request :path-params :id)})
 )
 
 (defn deletar-usuario
