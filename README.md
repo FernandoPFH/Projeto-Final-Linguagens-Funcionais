@@ -1,5 +1,11 @@
 # Projeto-Final-Linguagens-Funcionais
 
+## Integrantes Do Grupo:
+
+    Fernando Padilha Farah          - 19.00499-0
+    Gabriel Marques Rangel da Silva - 19.01288-8
+    Pedro Henrique Soares Pinheiro  - 17.02005-0
+
 ## Como Rodar:
 
     docker-compose up --build
